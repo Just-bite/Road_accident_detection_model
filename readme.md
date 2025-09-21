@@ -4,6 +4,7 @@ This program allows to find potential road accidents or anylize road accidents i
 **Operation system**: Windows
 
 **Language**: Python
+
 **Interface language**: Python
 
 [SRS of program](./docs/SRS.md)
@@ -13,6 +14,7 @@ This program allows to find potential road accidents or anylize road accidents i
 [Diagrams](./docs/diagrams/)
 
 [Source code](./code/)
+
 [Interface code](./code/)
 
 *Used patterns*:
