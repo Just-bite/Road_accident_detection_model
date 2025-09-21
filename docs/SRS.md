@@ -64,23 +64,23 @@
 Система использует датасет WTS, а также библиотеки OpenCV, YOLO, TensorFlow/PyTorch
 
 ## 2.2 Интерфейс пользователя
-[Окно входа в систему.](/docs/mockups/sign_in_out%201.png)
+![Окно входа в систему.](/docs/mockups/sign_in_out%201.png)
 
-[Окно регистрации нового пользователя.](/docs/mockups/sign_up.png)  
+![Окно регистрации нового пользователя.](/docs/mockups/sign_up.png)  
 
-[Окно регистрации нового пользователя после ввода имени, уже зарегистрированного в приложении.](/docs/mockups/taken.png)
+![Окно регистрации нового пользователя после ввода имени, уже зарегистрированного в приложении.](/docs/mockups/taken.png)
 
-[Окно входа для зарегистрированного пользователя.](/docs/mockups/sign_in.png)
+![Окно входа для зарегистрированного пользователя.](/docs/mockups/sign_in.png)
 
-[Главное окно системы (для администратора).](/docs/mockups/main.png)
+![Главное окно системы (для администратора).](/docs/mockups/main.png)
 
-[Окно для работы с видеотекой.](/docs/mockups/datasets.png)
+![Окно для работы с видеотекой.](/docs/mockups/datasets.png)
 
-[Окно для конфигурации модели.](/docs/mockups/model.png)
+![Окно для конфигурации модели.](/docs/mockups/model.png)
 
-[Окно архива отчетов.](/docs/mockups/reports_archive.png)
+![Окно архива отчетов.](/docs/mockups/reports_archive.png)
 
-[Окно анализа.](/docs/mockups/start.png)
+![Окно анализа.](/docs/mockups/start.png)
 
 ## 2.3 Характеристики пользователя
 
