@@ -106,7 +106,7 @@ sequenceDiagram
 sequenceDiagram
     participant U as Пользователь
     participant MM as Окно моделей
-    participant S as Сервер/БД
+    participant S as БД
 
     U->>MM: Нажaтие на модель в списке
     MM->>S: Запрос параметров и версий модели
@@ -134,7 +134,7 @@ sequenceDiagram
 sequenceDiagram
     participant U as Пользователь
     participant RI as Окно информации об отчетах
-    participant S as Сервер/БД
+    participant S as БД
 
     U->>RI: Нажатие на отчет из списка
     RI->>S: Запрос выбранного отчета
