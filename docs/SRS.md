@@ -97,15 +97,15 @@
 Окно конфигурации модели у аналитика.  
 ![](../docs/mockups/anal_model.png)   
 Окно архива отчетов у администратора.    
-![](/docs/mockups/reports_archive.png)  
+![](../docs/mockups/reports_archive.png)  
 Окно действий в архиве отчетов без роли администратора.  
-![](/docs/mockups/normie_reports.png)  
+![](../docs/mockups/normie_reports.png)  
 Окно удаления из архива отчетов у администратора.  
-![](/docs/mockups/admin%20export.png)    
+![](../docs/mockups/admin%20export.png)    
 Окно поиска по ключевым словам по отчету.  
-![](/docs/mockups/keywords.png)  
+![](../docs/mockups/keywords.png)  
 Окно анализа.   
-![](/docs/mockups/start.png)   
+![](../docs/mockups/start.png)   
 
 ## 2.3 Характеристики пользователя
 
