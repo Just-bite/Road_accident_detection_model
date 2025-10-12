@@ -1,5 +1,5 @@
 # Диаграмма классов
-
+```mermaid
 classDiagram
     %% Основной класс пользователя
     class User {
@@ -89,3 +89,4 @@ classDiagram
     %% Ассоциации
     Administrator "1" -- "1" ActivatorManager : manages
     User "1" -- "1" ActivatorManager : validates
+```
