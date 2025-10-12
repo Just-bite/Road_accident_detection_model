@@ -10,4 +10,12 @@
 ## 1 Вход в систему
 ![](../diagrams/images/sis_1.png)  
 ## 2 Регистрация в системе
-![](../diagrams/images/sis_2.png)
+![](../diagrams/images/sis_2.png)  
+## 1 Добавление видео
+![](../diagrams/images/sis_3.png)  
+## 1 Выбор модели
+![](../diagrams/images/sis_4.png)  
+## 1 Просмотр отчета
+![](../diagrams/images/sis_5.png)  
+## 1 Генерация отчета
+![](../diagrams/images/sis_6.png)  
