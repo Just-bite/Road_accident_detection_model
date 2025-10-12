@@ -8,4 +8,6 @@
 6 [Генерация отчета](#6-генерация-отчета-1)  
 
 ## 1 Вход в систему
-![](../diagrams/images/sis_1.png)
+![](../diagrams/images/sis_1.png)  
+## 2 Регистрация в системе
+![](../diagrams/images/sis_2.png)
