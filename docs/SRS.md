@@ -65,21 +65,45 @@
 
 ## 2.2 Интерфейс пользователя
 Окно входа в систему.  
-![](/docs/mockups/sign_in_out%201.png)  
+![](/mockups/sign_in_out.png)  
 Окно регистрации нового пользователя.  
-![](/docs/mockups/sign_up.png)    
+![](/mockups/sign_up.png)    
 Окно регистрации нового пользователя после ввода имени, уже зарегистрированного в приложении.  
-![](/docs/mockups/taken.png)  
+![](/mockups/taken.png)  
+Окно регистрации нового пользователя после ввода невалидного активатора.
+![](/mockups/invalid_activator.png)  
 Окно входа для зарегистрированного пользователя.  
 ![](/docs/mockups/sign_in.png)  
-Главное окно системы (для администратора).  
-![](/docs/mockups/main.png)  
+Окно входа пользователя, если он указал незарегистрированное имя.
+![](/mockups/unreal%20username.png)  
+Главное окно системы для администратора.  
+![](/mockups/main.png)  
+Главное окно системы для аналитика.
+![](/mockups/main_anal.png)
+Главное окно системы для наблюдателя.
+![](/mockups/main_obs.png)
 Окно для работы с видеотекой.  
-![](/docs/mockups/datasets.png)  
-Окно для конфигурации модели.  
-![](/docs/mockups/model.png)  
-Окно архива отчетов.  
-![](/docs/mockups/reports_archive.png)  
+![](/mockups/datasets.png)  
+Меню для добавлеения видео в видиотеку.
+![](/mockups/adding.png)  
+Окно для конфигурации модели у администратора.
+![](/mockups/admin%20model.png)  
+Экспорт модели у администратора.
+![](/mockups/admin%20model%20after%20export.png)  
+Выпадающее окно конфигураций гиперпараметров.
+![](/mockups/configs.png)  
+Выпадающее окно версий модели.
+![](/mockups/versions.png)
+Окно конфигурации модели у аналитика.
+![](/mockups/anal_model.png) 
+Окно архива отчетов у администратора.  
+![](/docs/mockups/reports_archive.png)
+Окно действий в архиве отчетов без роли администратора.
+![](/mockups/normie_reports.png)
+Окно удаления из архива отчетов у администратора.
+![](/mockups/admin%20export.png)  
+Окно поиска по ключевым словам по отчету.
+![](/mockups/keywords.png) 
 Окно анализа.  
 ![](/docs/mockups/start.png)  
 
