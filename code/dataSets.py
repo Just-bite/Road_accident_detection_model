@@ -14,15 +14,16 @@ class DatasetsScreen(QWidget):
         super().__init__()
         self.parent = parent
         self.root_path = r"E:\WTS\wts_dataset_zip\videos\val"
-        self.current_path = self.root_path  # текущая директория
+        self.current_path = self.root_path
 
         self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        # === Верхнее меню ===
+
         menu_bar = QMenuBar()
 
-        # --- Edit (только для admin/analyst) ---
         cur = self.parent.conn.cursor()
         cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))
         self.user_role = cur.fetchone()[0]
@@ -30,7 +31,6 @@ class DatasetsScreen(QWidget):
 
         if self.user_role in ("admin", "analyst"):
             edit_menu = menu_bar.addMenu("Edit")
-
             add_action = QAction("Add (Ctrl+A)", self)
             add_action.setShortcut("Ctrl+A")
             add_action.triggered.connect(self.add_dataset)
@@ -41,7 +41,6 @@ class DatasetsScreen(QWidget):
             delete_action.triggered.connect(self.delete_dataset)
             edit_menu.addAction(delete_action)
 
-        # --- Help ---
         help_menu = menu_bar.addMenu("Help")
         help_action = QAction("How this works", self)
         help_action.triggered.connect(self.show_help)
@@ -49,28 +48,36 @@ class DatasetsScreen(QWidget):
 
         self.layout.setMenuBar(menu_bar)
 
-        # === Основная область ===
-        main_area = QHBoxLayout()
 
-        # --- Левая панель: список папок и видео ---
+        main_area = QHBoxLayout()
+        main_area.setContentsMargins(0,0,0,0)
+        main_area.setSpacing(0)
+
+
         left_panel = QVBoxLayout()
+        left_panel.setContentsMargins(0,0,0,0)
+        left_panel.setSpacing(0)
+
         self.path_label = QLabel(self.current_path)
         self.path_label.setStyleSheet("font-weight: bold; color: gray;")
         left_panel.addWidget(self.path_label)
 
         self.folder_list = QListWidget()
         self.folder_list.itemClicked.connect(self.on_item_clicked)
-        left_panel.addWidget(self.folder_list)
+        left_panel.addWidget(self.folder_list, 1)
         main_area.addLayout(left_panel, 2)
 
-        # --- Правая панель: видео ---
+
         right_panel = QVBoxLayout()
+        right_panel.setContentsMargins(0,0,0,0)
+        right_panel.setSpacing(0)
+
         self.video_widget = QVideoWidget()
         self.video_player = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.video_player.setVideoOutput(self.video_widget)
-        right_panel.addWidget(self.video_widget, 5)
+        right_panel.addWidget(self.video_widget, 1)
 
-        # Панель управления видео
+
         controls = QHBoxLayout()
         self.play_btn = QPushButton("▶️")
         self.pause_btn = QPushButton("⏸️")
@@ -93,24 +100,29 @@ class DatasetsScreen(QWidget):
         right_panel.addLayout(controls)
         main_area.addLayout(right_panel, 4)
 
-        self.layout.addLayout(main_area)
+        self.layout.addLayout(main_area, 1)
 
-        # === Нижние кнопки ===
+
         bottom_bar = QHBoxLayout()
+        bottom_bar.setContentsMargins(0,0,0,0)
+        bottom_bar.setSpacing(0)
+
         self.up_btn = QPushButton("⬆️ Up")
         self.up_btn.clicked.connect(self.go_up)
         bottom_bar.addWidget(self.up_btn, alignment=Qt.AlignLeft)
 
+        bottom_bar.addStretch(1)
+
         back_btn = QPushButton("Back")
         back_btn.clicked.connect(self.back_to_menu)
-        bottom_bar.addWidget(back_btn, alignment=Qt.AlignLeft)
+        bottom_bar.addWidget(back_btn, alignment=Qt.AlignRight)
 
         self.layout.addLayout(bottom_bar)
 
-        # Загрузка начальной папки
+
         self.load_folder(self.root_path)
 
-    # === Загрузка содержимого папки ===
+
     def load_folder(self, path):
         self.folder_list.clear()
         self.current_path = path
@@ -137,7 +149,7 @@ class DatasetsScreen(QWidget):
             item.setData(Qt.UserRole + 1, "video")
             self.folder_list.addItem(item)
 
-    # === Клик по элементу ===
+
     def on_item_clicked(self, item):
         path = item.data(Qt.UserRole)
         item_type = item.data(Qt.UserRole + 1)
@@ -146,19 +158,19 @@ class DatasetsScreen(QWidget):
         elif item_type == "video":
             self.play_video(path)
 
-    # === Воспроизведение видео ===
+
     def play_video(self, path):
         url = QMediaContent(QUrl.fromLocalFile(path))
         self.video_player.setMedia(url)
         self.video_player.play()
 
-    # === Навигация вверх ===
+
     def go_up(self):
         if self.current_path != self.root_path:
             parent_path = os.path.dirname(self.current_path)
             self.load_folder(parent_path)
 
-    # === Работа со слайдером ===
+
     def position_changed(self, position):
         self.slider.setValue(position)
 
@@ -168,7 +180,7 @@ class DatasetsScreen(QWidget):
     def set_position(self, position):
         self.video_player.setPosition(position)
 
-    # === Добавление видео ===
+
     def add_dataset(self):
         files, _ = QFileDialog.getOpenFileNames(
             self, "Select video files to add", "", "Video Files (*.mp4 *.avi *.mov)"
@@ -182,7 +194,7 @@ class DatasetsScreen(QWidget):
                 QMessageBox.warning(self, "Error", f"Failed to copy {f}:\n{e}")
         self.load_folder(self.current_path)
 
-    # === Удаление видео ===
+
     def delete_dataset(self):
         selected_items = self.folder_list.selectedItems()
         if not selected_items:
@@ -205,7 +217,7 @@ class DatasetsScreen(QWidget):
                     QMessageBox.warning(self, "Error", f"Failed to delete {path}:\n{e}")
         self.load_folder(self.current_path)
 
-    # === Окно помощи ===
+
     def show_help(self):
         dlg = QDialog(self)
         dlg.setWindowTitle("Help - Datasets")
@@ -232,7 +244,7 @@ Black background with green text for comfort and readability.
         dlg.setLayout(layout)
         dlg.exec_()
 
-    # === Назад в главное меню ===
+
     def back_to_menu(self):
         cur = self.parent.conn.cursor()
         cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))

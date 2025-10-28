@@ -74,10 +74,10 @@ class StartAnalysisScreen(QWidget):
         self.video_player.positionChanged.connect(self.position_changed)
         self.video_player.durationChanged.connect(self.duration_changed)
 
-        # --- Кнопка Close снизу ---
-        close_btn = QPushButton("Close")
-        close_btn.clicked.connect(self.close_screen)
-        self.layout.addWidget(close_btn, alignment=Qt.AlignLeft)
+        # --- Кнопка Back в правом нижнем углу ---
+        back_btn = QPushButton("Back")
+        back_btn.clicked.connect(self.close_screen)
+        self.layout.addWidget(back_btn, alignment=Qt.AlignRight | Qt.AlignBottom)
 
     # === Методы для управления видео ===
     def position_changed(self, position):

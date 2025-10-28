@@ -24,19 +24,19 @@ class ReportsArchiveScreen(QWidget):
         self.current_match_index = -1
 
         self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        # === Верхнее меню ===
+
         menu_bar = QMenuBar()
 
-        # --- File ---
         file_menu = menu_bar.addMenu("File")
         export_action = QAction("Export (Ctrl+E)", self)
         export_action.setShortcut("Ctrl+E")
         export_action.triggered.connect(self.export_pdf)
         file_menu.addAction(export_action)
 
-        # Опция удаления — только для admin / analyst
         cur = self.parent.conn.cursor()
         cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))
         role = cur.fetchone()[0]
@@ -48,7 +48,6 @@ class ReportsArchiveScreen(QWidget):
             delete_action.triggered.connect(self.delete_report)
             file_menu.addAction(delete_action)
 
-        # --- Help ---
         help_menu = menu_bar.addMenu("Help")
         help_action = QAction("How this works", self)
         help_action.triggered.connect(self.show_help)
@@ -56,11 +55,15 @@ class ReportsArchiveScreen(QWidget):
 
         self.layout.setMenuBar(menu_bar)
 
-        # === Основная область ===
-        main_area = QHBoxLayout()
 
-        # --- Левая панель ---
+        main_area = QHBoxLayout()
+        main_area.setContentsMargins(0, 0, 0, 0)
+        main_area.setSpacing(0)
+
+
         left_panel = QVBoxLayout()
+        left_panel.setContentsMargins(0, 0, 0, 0)
+        left_panel.setSpacing(0)
         self.path_label = QLabel(self.current_path)
         self.path_label.setStyleSheet("font-weight: bold; color: gray;")
         left_panel.addWidget(self.path_label)
@@ -70,11 +73,15 @@ class ReportsArchiveScreen(QWidget):
         left_panel.addWidget(self.folder_list)
         main_area.addLayout(left_panel, 2)
 
-        # --- Правая панель ---
-        right_panel = QVBoxLayout()
 
-        # Поисковая строка + кнопки Next/Prev
+        right_panel = QVBoxLayout()
+        right_panel.setContentsMargins(0, 0, 0, 0)
+        right_panel.setSpacing(0)
+
         search_layout = QHBoxLayout()
+        search_layout.setContentsMargins(0, 0, 0, 0)
+        search_layout.setSpacing(0)
+
         self.search_field = QLineEdit()
         self.search_field.setPlaceholderText("Search in document...")
         self.search_field.textChanged.connect(self.highlight_text)
@@ -89,7 +96,6 @@ class ReportsArchiveScreen(QWidget):
 
         right_panel.addLayout(search_layout)
 
-        # Текстовое окно
         self.text_edit = QTextEdit()
         self.text_edit.setReadOnly(False)
         self.text_edit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -109,21 +115,27 @@ class ReportsArchiveScreen(QWidget):
         main_area.addLayout(right_panel, 5)
         self.layout.addLayout(main_area)
 
-        # === Нижняя панель ===
+
         bottom_bar = QHBoxLayout()
+        bottom_bar.setContentsMargins(0, 0, 0, 0)
+        bottom_bar.setSpacing(0)
+
         self.up_btn = QPushButton("⬆️ Up")
         self.up_btn.clicked.connect(self.go_up)
         bottom_bar.addWidget(self.up_btn, alignment=Qt.AlignLeft)
 
+        bottom_bar.addStretch(1)  # отталкивает Back вправо
+
         back_btn = QPushButton("Back")
         back_btn.clicked.connect(self.back_to_menu)
-        bottom_bar.addWidget(back_btn, alignment=Qt.AlignLeft)
+        bottom_bar.addWidget(back_btn, alignment=Qt.AlignRight)
+
         self.layout.addLayout(bottom_bar)
 
-        # === Загрузка начальной папки ===
+
         self.load_folder(self.root_path)
 
-    # --- Загрузка папки ---
+
     def load_folder(self, path):
         self.folder_list.clear()
         self.current_path = path
@@ -150,7 +162,7 @@ class ReportsArchiveScreen(QWidget):
             item.setData(Qt.UserRole + 1, "doc")
             self.folder_list.addItem(item)
 
-    # --- Клик по элементу ---
+
     def on_item_clicked(self, item):
         path = item.data(Qt.UserRole)
         item_type = item.data(Qt.UserRole + 1)
@@ -159,7 +171,7 @@ class ReportsArchiveScreen(QWidget):
         elif item_type == "doc":
             self.load_document(path)
 
-    # --- Загрузка документа ---
+
     def load_document(self, path):
         self.current_doc_path = path
         text = ""
@@ -182,18 +194,15 @@ class ReportsArchiveScreen(QWidget):
         self.search_matches.clear()
         self.current_match_index = -1
 
-    # --- Навигация вверх ---
     def go_up(self):
         if self.current_path != self.root_path:
             parent_path = os.path.dirname(self.current_path)
             self.load_folder(parent_path)
 
-    # --- Подсветка поиска ---
     def highlight_text(self):
         text_to_find = self.search_field.text().strip()
         doc = self.text_edit.document()
 
-        # Очистка предыдущих выделений
         cursor = QTextCursor(doc)
         cursor.beginEditBlock()
         fmt_clear = QTextCharFormat()
@@ -208,10 +217,9 @@ class ReportsArchiveScreen(QWidget):
         if not text_to_find:
             return
 
-        # Поиск всех совпадений (регистронечувствительный)
         cursor = QTextCursor(doc)
         fmt_highlight = QTextCharFormat()
-        fmt_highlight.setBackground(QColor(144, 238, 144, 150))  # бледно-зелёная подсветка
+        fmt_highlight.setBackground(QColor(144, 238, 144, 150))
 
         while not cursor.isNull() and not cursor.atEnd():
             found_cursor = doc.find(text_to_find, cursor, QTextDocument.FindCaseSensitively)
@@ -226,21 +234,18 @@ class ReportsArchiveScreen(QWidget):
             self.current_match_index = 0
             self.text_edit.setTextCursor(self.search_matches[0])
 
-    # --- Переход к следующему совпадению ---
     def goto_next_match(self):
         if not self.search_matches:
             return
         self.current_match_index = (self.current_match_index + 1) % len(self.search_matches)
         self.text_edit.setTextCursor(self.search_matches[self.current_match_index])
 
-    # --- Переход к предыдущему совпадению ---
     def goto_prev_match(self):
         if not self.search_matches:
             return
         self.current_match_index = (self.current_match_index - 1) % len(self.search_matches)
         self.text_edit.setTextCursor(self.search_matches[self.current_match_index])
 
-    # --- Экспорт PDF ---
     def export_pdf(self):
         if not self.text_edit.toPlainText().strip():
             QMessageBox.warning(self, "Export Error", "No document loaded to export.")
@@ -259,7 +264,6 @@ class ReportsArchiveScreen(QWidget):
         c.save()
         QMessageBox.information(self, "Export Complete", f"Report saved as:\n{path}")
 
-    # --- Удаление отчёта ---
     def delete_report(self):
         if not self.current_doc_path:
             QMessageBox.warning(self, "No file", "Open a report first.")
@@ -274,7 +278,6 @@ class ReportsArchiveScreen(QWidget):
             QMessageBox.information(self, "Deleted", "Report deleted successfully.")
             self.load_folder(self.current_path)
 
-    # --- Окно помощи ---
     def show_help(self):
         dlg = QDialog(self)
         dlg.setWindowTitle("Help - Reports Archive")
@@ -303,7 +306,6 @@ Black background with green text for comfort and readability.
         dlg.setLayout(layout)
         dlg.exec_()
 
-    # --- Назад в главное меню ---
     def back_to_menu(self):
         cur = self.parent.conn.cursor()
         cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))

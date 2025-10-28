@@ -20,13 +20,13 @@ class ModelSettingsScreen(QWidget):
         export_btn = QPushButton("Export Model")
         left_panel.addWidget(export_btn)
 
-        # Список моделей
+
         self.model_list = QListWidget()
         self.model_list.itemClicked.connect(self.on_model_selected)
         self.load_models()
-        self.model_list.setMinimumHeight(200)  # минимальная высота для появления скролла
+        self.model_list.setMinimumHeight(200)
 
-        # Оборачиваем список в QScrollArea
+
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         frame = QFrame()
@@ -34,14 +34,12 @@ class ModelSettingsScreen(QWidget):
         frame.layout().addWidget(self.model_list)
         scroll_area.setWidget(frame)
 
-        # Добавляем scroll_area с растяжкой
+
         left_panel.addWidget(scroll_area, stretch=1)
         self.layout.addLayout(left_panel, 2)
 
-        # ===== Правая панель =====
         right_panel = QVBoxLayout()
 
-        # Гибкие ряды для текста + комбобокс
         config_row = QHBoxLayout()
         config_label = QLabel("Hyperparameter configuration:")
         self.config_combo = QComboBox()
@@ -63,14 +61,12 @@ class ModelSettingsScreen(QWidget):
         for cb in [self.check_seg, self.check_borders, self.check_default]:
             right_panel.addWidget(cb)
 
-        # Кнопка Back справа
         back_btn = QPushButton("Back")
         back_btn.clicked.connect(self.back_to_menu)
         right_panel.addWidget(back_btn, alignment=Qt.AlignRight)
 
         self.layout.addLayout(right_panel, 3)
 
-    # --- Загрузка моделей ---
     def load_models(self):
         cur = self.parent.conn.cursor()
         cur.execute("SELECT id, name FROM models ORDER BY id")
@@ -83,7 +79,6 @@ class ModelSettingsScreen(QWidget):
             item.setData(Qt.UserRole, mid)
             self.model_list.addItem(item)
 
-    # --- При выборе модели ---
     def on_model_selected(self, item):
         model_id = item.data(Qt.UserRole)
         cur = self.parent.conn.cursor()
@@ -104,7 +99,6 @@ class ModelSettingsScreen(QWidget):
                 for ver in versions:
                     self.version_combo.addItem(ver)
 
-    # --- Назад ---
     def back_to_menu(self):
         cur = self.parent.conn.cursor()
         cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))

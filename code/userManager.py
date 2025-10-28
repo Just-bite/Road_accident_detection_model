@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QLabel, QFrame, QLineEdit,
-    QMessageBox, QInputDialog
+    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFrame,
+    QLineEdit, QMessageBox, QInputDialog, QScrollArea
 )
 from PyQt5.QtCore import Qt
 from functools import partial
@@ -14,6 +13,7 @@ class ManageUsersScreen(QWidget):
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+
 
         top_bar = QHBoxLayout()
         self.search_input = QLineEdit()
@@ -30,32 +30,44 @@ class ManageUsersScreen(QWidget):
         top_bar.addWidget(self.add_btn)
 
         user_role = getattr(self.parent, "user_role", None)
-        if user_role in ("admin", "analyst"):
-            self.add_btn.setEnabled(True)
-        else:
-            self.add_btn.setDisabled(True)
+        self.add_btn.setEnabled(user_role in ("admin", "analyst"))
 
         self.layout.addLayout(top_bar)
 
+
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setStyleSheet("background-color: #1F1F1F; border: none;")
         self.users_container = QFrame()
-        self.users_container.setStyleSheet("background-color: #2d2d2d;")
+        self.users_container.setStyleSheet("background-color: #2d2d2d; border-radius: 6px;")
         self.users_layout = QVBoxLayout()
         self.users_layout.setContentsMargins(5,5,5,5)
         self.users_layout.setSpacing(5)
         self.users_container.setLayout(self.users_layout)
-        self.layout.addWidget(self.users_container)
+        self.scroll_area.setWidget(self.users_container)
+        self.layout.addWidget(self.scroll_area)
+
+
+        self.scroll_area.setMaximumHeight(7 * 40 + 20)
+
 
         back_btn = QPushButton("Back")
+        back_btn.setStyleSheet("""
+            QPushButton { color: white; border: 2px solid #00FF00; background-color: #2d2d2d; padding: 4px 10px; border-radius: 4px; }
+            QPushButton:hover { background-color: #3a3a3a; }
+        """)
         back_btn.clicked.connect(self.back_to_menu)
         self.layout.addWidget(back_btn, alignment=Qt.AlignRight)
 
         self.refresh_users()
+
 
     def clear_users_layout(self):
         while self.users_layout.count():
             child = self.users_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
+
 
     def refresh_users(self):
         try:
@@ -67,6 +79,7 @@ class ManageUsersScreen(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Database Error", str(e))
 
+
     def display_users(self, users):
         self.clear_users_layout()
         current_user = getattr(self.parent, "current_username", None)
@@ -77,16 +90,14 @@ class ManageUsersScreen(QWidget):
 
             hbox = QHBoxLayout()
             label = QLabel(f"{username} ({role})")
-            label.setStyleSheet("color: white;")
+            label.setStyleSheet("color: white; font-weight: bold;")
             hbox.addWidget(label)
 
             change_btn = QPushButton("Change Role")
             del_btn = QPushButton("Delete")
             for btn in [change_btn, del_btn]:
                 btn.setStyleSheet("""
-                    QPushButton {
-                        color: white; border: 2px solid #00FF00; background-color: #2d2d2d; padding: 3px 8px;
-                    }
+                    QPushButton { color: white; border: 2px solid #00FF00; background-color: #2d2d2d; padding: 3px 8px; border-radius: 4px; }
                     QPushButton:hover { background-color: #3a3a3a; }
                 """)
             change_btn.clicked.connect(partial(self.change_role, user_id, role))
@@ -94,24 +105,29 @@ class ManageUsersScreen(QWidget):
 
             hbox.addWidget(change_btn)
             hbox.addWidget(del_btn)
-            self.users_layout.addLayout(hbox)
+
+            user_widget = QFrame()
+            user_widget.setLayout(hbox)
+            user_widget.setStyleSheet("background-color: #2A2A2A; border-radius: 4px; padding: 2px;")
+            self.users_layout.addWidget(user_widget)
+
+        self.users_layout.addStretch()
+
 
     def filter_users(self):
         text = self.search_input.text().strip().lower()
         if not text:
             self.display_users(self.all_users)
             return
-
         matched = [u for u in self.all_users if text in u[1].lower()]
         unmatched = [u for u in self.all_users if text not in u[1].lower()]
         self.display_users(matched + unmatched)
 
+
     def add_user(self):
-        print("Add user button clicked")
         try:
             username, ok = QInputDialog.getText(self, "Add User", "Enter new username:")
             if not ok or not username.strip():
-                print("Add user cancelled or empty")
                 return
             username = username.strip()
 
@@ -123,12 +139,10 @@ class ManageUsersScreen(QWidget):
                 return
 
             activator, ok2 = QInputDialog.getText(
-                self, "Activator (optional)",
-                "Enter activator code for analyst (or leave empty):"
+                self, "Activator (optional)", "Enter activator code for analyst (or leave empty):"
             )
             activator = activator.strip() if ok2 else ""
-
-            default_password = "default_pass"  # обязательно для NOT NULL
+            default_password = "default_pass"
 
             if activator:
                 cur.execute(
@@ -150,13 +164,10 @@ class ManageUsersScreen(QWidget):
 
             self.parent.conn.commit()
             cur.close()
-            print(f"User '{username}' added successfully")
-            self.clear_users_layout() ###
             self.refresh_users()
-
         except Exception as e:
-            print("Database error in add_user:", e)
             QMessageBox.critical(self, "Database Error", str(e))
+
 
     def change_role(self, user_id, current_role):
         try:
@@ -177,12 +188,12 @@ class ManageUsersScreen(QWidget):
                 activator_id = act[0]
                 cur.execute("UPDATE users SET role = 'analyst', activator_id = %s WHERE id = %s", (activator_id, user_id))
                 cur.execute("UPDATE activators SET is_used = TRUE WHERE id = %s", (activator_id,))
-
             self.parent.conn.commit()
             cur.close()
             self.refresh_users()
         except Exception as e:
             QMessageBox.critical(self, "Database Error", str(e))
+
 
     def delete_user(self, user_id):
         try:
@@ -194,13 +205,14 @@ class ManageUsersScreen(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Database Error", str(e))
 
+
     def back_to_menu(self):
         try:
             cur = self.parent.conn.cursor()
             cur.execute("SELECT role FROM users WHERE username = %s", (self.parent.current_username,))
             role = cur.fetchone()[0]
             cur.close()
-            self.parent.user_role = role  # <- сохраняем роль родителю
+            self.parent.user_role = role
             self.parent.show_main_menu(self.parent.current_username, role)
         except Exception as e:
             QMessageBox.critical(self, "Database Error", str(e))
